@@ -1,6 +1,4 @@
-﻿using LibUsbDotNet;
-using LibUsbDotNet.LibUsb;
-using LibUsbDotNet.Main;
+﻿using HidApi;
 
 namespace HyperMicMonitor;
 
@@ -47,51 +45,44 @@ More info: https://acidiclight.dev/my-work/hypermicmonitor");
 
     public static void SetMicMonitoring(bool turnOn)
     {
-        using (var context = new UsbContext())
+        var deviceInfo = Hid.Enumerate(vendorId, productId).FirstOrDefault();
+        if (deviceInfo == null)
         {
-            context.SetDebugLevel(LogLevel.Info);
-            using var devices = context.List();
-
-            var headsetReceiver = devices.FirstOrDefault(x => x.ProductId == productId && x.VendorId == vendorId);
-
-            if (headsetReceiver == null)
-            {
-                Console.WriteLine(
-                    "Could not find the HyperX Cloud Alpha headset's wireless receiver! Ensure that it is connected and that your headset is on.");
-                Environment.Exit(1);
-            }
-
-            headsetReceiver.Open();
-            
-            Console.WriteLine($"Located device: {headsetReceiver.Info.Manufacturer} {headsetReceiver.Info.Product}");
-
-            headsetReceiver.ClaimInterface(headsetReceiver.Configs[0].Interfaces[6].Number);
-
-            var writeEndpoint = headsetReceiver.OpenEndpointWriter(WriteEndpointID.Ep04);
-            var readEndpoint = headsetReceiver.OpenEndpointReader(ReadEndpointID.Ep04);
-            
-
-            var buffer = new byte[96];
-            
-            // first 3 bytes are static
-            buffer[0] = 0x21;
-            buffer[1] = 0xbb;
-            buffer[2] = 0x10;
-            
-            // fourth is whether we want mic monitoring on or off
-            buffer[3] = turnOn ? (byte) 0x01 : (byte) 0x00;
-
-            var writeError = writeEndpoint.Write(buffer, timeout, out int what);
-            if (writeError != Error.Success)
-            {
-                Console.WriteLine("Failed to write to device");
-                Environment.Exit(2);
-            }
-
-            var readBuffer = new byte[96];
-            var readError = readEndpoint.Read(readBuffer, timeout, out int whatAgain);
-
-            Console.WriteLine("Mic monitoring is now {0}.", turnOn ? "on" : "off");
+            Console.WriteLine(
+                "Could not find a compatible HyperX Cloud Alpha Wireless USB receiver! Please make sure that it is plugged in.");
+            return;
         }
+
+        Console.WriteLine($"Found {deviceInfo.ManufacturerString} {deviceInfo.ProductString}");
+
+        Device? connection = null;
+
+        try
+        {
+            connection = deviceInfo.ConnectToDevice();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to connect to the HID device: {ex.Message} - ensure you have the correct privileges, or that you have set up the udev rules if you're on Linux.");
+            return;
+        }
+        
+        Console.WriteLine("Connected.");
+
+        Span<byte> packet = stackalloc byte[96];
+        
+        // first 3 bytes are static
+        packet[0] = 0x21;
+        packet[1] = 0xbb;
+        packet[2] = 0x10;
+            
+        // fourth is whether we want mic monitoring on or off
+        packet[3] = turnOn ? (byte) 0x01 : (byte) 0x00;
+        
+        connection.Write(packet);
+
+        Console.WriteLine("Mic monitoring is now {0}.", turnOn ? "on" : "off");
+
+        connection.Dispose();
     }
 }

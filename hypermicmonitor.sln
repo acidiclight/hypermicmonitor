@@ -2,6 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hypermicmonitor", "hypermicmonitor\hypermicmonitor.csproj", "{F01C277D-E819-43B6-B4AA-4164873793C9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{2EFBA89B-BA07-4E5D-AA5B-AE5014F610D1}"
+	ProjectSection(SolutionItems) = preProject
+		70-hypermicmonitor-hid.rules = 70-hypermicmonitor-hid.rules
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

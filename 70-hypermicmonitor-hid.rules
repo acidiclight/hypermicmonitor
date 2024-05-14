@@ -1,0 +1,12 @@
+# udev rules for hypermicmonitor
+#
+# hypermicmonitor is a simple CLI tool for enabling/disabling the Mic
+# Monitoring feature of a HyperX Cloud Alpha wireless headset
+#
+# These udev rules allow non-root users to use hypermicmonitor.
+
+# HIDAPI/libusb
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="03f0", ATTRS{idProduct}=="098d", TAG+="uaccess"
+
+# HIDAPI/hidraw
+KERNEL=="hidraw*", ATTRS{idVendor}=="03f0", ATTRS{idProduct}=="098d", TAG+="uaccess"

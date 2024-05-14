@@ -1,5 +1,5 @@
 # hypermicmonitor
-A basic program for turning Mic Monitoring on/off on a HyperX Cloud Alpha wireless headset, through the command-line, on any platform supporting libusb and .NET.
+A basic program for turning Mic Monitoring on/off on a HyperX Cloud Alpha wireless headset, through the command-line, on any platform supporting HidApi and .NET.
 
 ### Why?
 Like many of you, I want to be a daily-driving Linux user. But I'm visually impaired and struggle to both read and type. I have to use a headset with a mic on it that can play back what it hears through the headset as if it were a hearing aid. This lets me hear myself type and be more confident that the keys I'm pressing are actually being pressed, especially when I can't see my screen.
@@ -36,8 +36,12 @@ It's genuinely that simple.
 
 You could even put it in your desktop environment's startup list or your window manager's config. And you'd have a better experience than what HyperX ships.
 
-### Gotchas
+### NOTE ABOUT LINUX
+I initially wrote this on Windows, and it worked fine there. I assumed that it'd just work fine on Linux as well. But that's not the case - it requires some additional configuration.
 
+You need to add some udev rules to your system that allow non-root users to write to the headset's HID interface. If you're feeling lazy, just copy the `70-hypermicmonitor-hid.rules` file to `/etc/udev/rules.d` and reboot your system. If you're feeling less lazy, look at the contents of the file and see what it does.
+
+### Gotchas
 This only works with one single headset, the one I have. It's a HyperX Cloud Alpha Wireless, but past that... I don't know what you have. But if you know the Vendor ID and Product ID of your headset's receiver, and it's also a HyperX headset and you know it has mic monitoring support, maybe you can adapt this code to work. If the IDs match what's already in the code, then you have the same headset I do anyway.
 
 The program uses the receiver's vendor ID and product ID to find the receiver. If it isn't plugged in, or otherwise can't be found, you'll get an error telling you so.
