@@ -31,7 +31,7 @@ public class Program
         Console.WriteLine($"Usage: {exe} <true|false>");
         Console.WriteLine();
         Console.WriteLine(
-            @"This program is extremely simple. It uses LibUSB to communicate with HyperX Cloud Alpha headsets to
+            @"This program is extremely simple. It uses HidApi to communicate with HyperX Cloud Alpha headsets to
 turn on/off their hardware mic-monitoring feature.
 
 Pass 'true' to turn it on.
