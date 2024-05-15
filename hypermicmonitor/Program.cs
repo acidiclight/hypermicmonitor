@@ -63,7 +63,7 @@ More info: https://acidiclight.dev/my-work/hypermicmonitor");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to connect to the HID device: {ex.Message} - ensure you have the correct privileges, or that you have set up the udev rules if you're on Linux.");
+            Console.WriteLine($"Failed to connect to the HID device: {ex.Message} - ensure you have the correct privileges, or that you have set up the udev rules if you're on Linux. If you are certain the udev rules were put in place, or you installed hypermicmonitor via a distro package manager, re-plug the headset receiver and try again.");
             return;
         }
         
